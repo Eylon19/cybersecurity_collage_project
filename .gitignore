@@ -1,0 +1,19 @@
+# --- קבצי מערכת של macOS ---
+.DS_Store
+Thumbs.db
+
+# --- קבצי עורך הקוד ---
+.vscode/
+.idea/
+
+# --- תיקיות זמניות וקבצי לוג ---
+*.log
+tmp/
+node_modules/
+
+# --- קבצים רגישים (סודות) ---
+.env
+config.json
+secrets.txt
+*.key
+*.pem

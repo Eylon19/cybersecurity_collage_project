@@ -1,0 +1,25 @@
+<%- include('header') %>
+<h1>הרשמה</h1>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+<form method="post" action="/register">
+    <label>שם משתמש</label>
+    <input type="text" name="username" required>
+    <label>סיסמה</label>
+    <input type="password" name="password" required>
+    <label>גיל</label>
+    <input type="number" name="age" required>
+    <label>עיר</label>
+    <input type="text" name="city" required>
+    <label>תחום עיסוק</label>
+    <input type="text" name="occupation" required>
+    <label>נושא סייבר מועדף</label>
+    <input type="text" name="favoriteTopic" required>
+    <label>רמת ידע בסייבר</label>
+    <select name="experienceLevel">
+        <option value="Beginner">מתחיל</option>
+        <option value="Medium">בינוני</option>
+        <option value="Advanced">מתקדם</option>
+    </select>
+    <button type="submit">הרשמה</button>
+</form>
+<%- include('footer') %>

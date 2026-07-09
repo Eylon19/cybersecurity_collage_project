@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyber Awareness</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+    <h2>אתר להגברת מודעות לסייבר</h2>
+    <nav>
+        <a href="/">בית</a>
+        <a href="/articles">מאמרים</a>
+        <a href="/threats">איומי סייבר</a>
+        <a href="/security-tips">טיפים לאבטחת מידע</a>
+        <% if (user) { %>
+            <a href="/quiz">מבחן ידע</a>
+            <a href="/profile">אזור אישי</a>
+            <a href="/logout">התנתקות</a>
+        <% } else { %>
+            <a href="/register">הרשמה</a>
+            <a href="/login">התחברות</a>
+        <% } %>
+    </nav>
+</header>
+<main>

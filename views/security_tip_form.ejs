@@ -1,0 +1,45 @@
+<%- include('header') %>
+
+<h1><%= title %></h1>
+
+<form method="post" action="<%= action %>">
+
+    <label>כותרת</label>
+    <input type="text"
+           name="title"
+           value="<%= tip ? tip.title : '' %>"
+           required>
+
+    <label>קטגוריה</label>
+    <input type="text"
+           name="category"
+           value="<%= tip ? tip.category : '' %>"
+           required>
+
+    <label>תיאור</label>
+    <textarea name="description" required><%= tip ? tip.description : '' %></textarea>
+
+    <label>רמת חשיבות</label>
+    <select name="importanceLevel">
+        <option value="Low" <%= tip && tip.importance_level === 'Low' ? 'selected' : '' %>>נמוכה</option>
+        <option value="Medium" <%= tip && tip.importance_level === 'Medium' ? 'selected' : '' %>>בינונית</option>
+        <option value="High" <%= tip && tip.importance_level === 'High' ? 'selected' : '' %>>גבוהה</option>
+    </select>
+
+    <label>פעולה מומלצת</label>
+    <textarea name="recommendedAction" required><%= tip ? tip.recommended_action : '' %></textarea>
+
+    <label>קהל יעד</label>
+    <input type="text"
+           name="targetUser"
+           value="<%= tip ? tip.target_user : '' %>"
+           required>
+
+    <label>דוגמה</label>
+    <textarea name="example" required><%= tip ? tip.example : '' %></textarea>
+
+    <button type="submit">שמירה</button>
+
+</form>
+
+<%- include('footer') %>

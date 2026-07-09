@@ -1,0 +1,11 @@
+<%- include('header') %>
+<h1>התחברות</h1>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+<form method="post" action="/login">
+    <label>שם משתמש</label>
+    <input type="text" name="username" required>
+    <label>סיסמה</label>
+    <input type="password" name="password" required>
+    <button type="submit">התחברות</button>
+</form>
+<%- include('footer') %>

@@ -1,0 +1,20 @@
+<%- include('header') %>
+<h1>אזור אישי</h1>
+<div class="card">
+    <p><strong>שם משתמש:</strong> <%= user.username %></p>
+    <p><strong>עיר:</strong> <%= user.city %></p>
+    <p><strong>תחום עיסוק:</strong> <%= user.occupation %></p>
+    <p><strong>רמת ידע:</strong> <%= user.experience_level %></p>
+</div>
+<h2>תוצאות מבחנים</h2>
+<% if (results.length > 0) { %>
+<table>
+    <tr><th>ציון</th><th>תאריך</th></tr>
+    <% for (let x in results) { %>
+        <tr><td><%= results[x].score %></td><td><%= results[x].created_at %></td></tr>
+    <% } %>
+</table>
+<% } else { %>
+<p>עדיין אין תוצאות מבחנים.</p>
+<% } %>
+<%- include('footer') %>

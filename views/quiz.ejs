@@ -1,0 +1,45 @@
+<%- include('header') %>
+
+<h1>מבחן מודעות לסייבר</h1>
+
+<% if (score !== null) { %>
+    <div class="card score-card">
+        <h2>הציון שלך: <%= score %></h2>
+    </div>
+<% } %>
+
+<form class="quiz-form" method="post" action="/quiz">
+
+    <div class="question-card">
+        <h3>1. מהי מתקפת Phishing?</h3>
+        <label class="quiz-option"><input type="radio" name="q1" value="a" required> התקפה על סיסמת Wi-Fi בלבד</label>
+        <label class="quiz-option"><input type="radio" name="q1" value="b"> ניסיון לגנוב מידע באמצעות התחזות</label>
+        <label class="quiz-option"><input type="radio" name="q1" value="c"> עדכון תוכנה</label>
+    </div>
+
+    <div class="question-card">
+        <h3>2. מה כדאי לעשות כשמקבלים קישור חשוד?</h3>
+        <label class="quiz-option"><input type="radio" name="q2" value="a" required> לפתוח מיד</label>
+        <label class="quiz-option"><input type="radio" name="q2" value="b"> לשלוח לחברים</label>
+        <label class="quiz-option"><input type="radio" name="q2" value="c"> לא לפתוח ולבדוק את המקור</label>
+    </div>
+
+    <div class="question-card">
+        <h3>3. מהי סיסמה חזקה?</h3>
+        <label class="quiz-option"><input type="radio" name="q3" value="a" required> סיסמה ארוכה עם אותיות, מספרים וסימנים</label>
+        <label class="quiz-option"><input type="radio" name="q3" value="b"> תאריך לידה</label>
+        <label class="quiz-option"><input type="radio" name="q3" value="c"> 123456</label>
+    </div>
+
+    <div class="question-card">
+        <h3>4. מהי מטרת עדכוני אבטחה?</h3>
+        <label class="quiz-option"><input type="radio" name="q4" value="a" required> לשנות צבעים במחשב</label>
+        <label class="quiz-option"><input type="radio" name="q4" value="b"> לתקן חולשות אבטחה</label>
+        <label class="quiz-option"><input type="radio" name="q4" value="c"> למחוק קבצים</label>
+    </div>
+
+    <button class="submit-quiz" type="submit">שליחת מבחן</button>
+
+</form>
+
+<%- include('footer') %>

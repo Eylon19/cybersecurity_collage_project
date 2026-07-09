@@ -1,0 +1,61 @@
+<%- include('header') %>
+
+<h1>טיפים לאבטחת מידע</h1>
+
+<% if (user) { %>
+    <a class="btn" href="/security-tips/add">הוספת טיפ אבטחה</a>
+<% } %>
+
+<% if (tips.length > 0) { %>
+
+    <% for (let x in tips) { %>
+
+        <div class="card">
+
+            <h2><%= tips[x].title %></h2>
+
+            <p><strong>קטגוריה:</strong> <%= tips[x].category %></p>
+
+            <p><strong>רמת חשיבות:</strong> <%= tips[x].importance_level %></p>
+
+            <p><strong>קהל יעד:</strong> <%= tips[x].target_user %></p>
+
+            <p><strong>תיאור:</strong></p>
+            <p><%= tips[x].description %></p>
+
+            <p><strong>פעולה מומלצת:</strong></p>
+            <p><%= tips[x].recommended_action %></p>
+
+            <p><strong>דוגמה:</strong></p>
+            <p><%= tips[x].example %></p>
+
+            <% if (user) { %>
+
+                <a class="btn"
+                   href="/security-tips/edit/<%= tips[x].id %>">
+                    עריכה
+                </a>
+
+                <form method="post"
+                      action="/security-tips/delete/<%= tips[x].id %>"
+                      style="display:inline;">
+
+                    <button class="danger" type="submit">
+                        מחיקה
+                    </button>
+
+                </form>
+
+            <% } %>
+
+        </div>
+
+    <% } %>
+
+<% } else { %>
+
+    <p>אין טיפים להצגה.</p>
+
+<% } %>
+
+<%- include('footer') %>

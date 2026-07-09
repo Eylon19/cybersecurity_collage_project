@@ -1,0 +1,63 @@
+<%- include('header') %>
+
+<h1>ספריית איומי סייבר</h1>
+
+<% if (user) { %>
+    <a class="btn" href="/threats/add">הוספת איום</a>
+<% } %>
+
+<% if (threats.length > 0) { %>
+
+    <% for (let x in threats) { %>
+
+        <div class="card">
+
+            <h2><%= threats[x].threat_name %></h2>
+
+            <p><strong>רמת סיכון:</strong> <%= threats[x].severity %></p>
+
+            <p><strong>קהל יעד:</strong> <%= threats[x].target_audience %></p>
+
+            <p><strong>שיטת תקיפה:</strong> <%= threats[x].attack_method %></p>
+
+            <p><strong>רמת נזק:</strong> <%= threats[x].damage_level %></p>
+
+            <p><strong>תיאור:</strong></p>
+            <p><%= threats[x].description %></p>
+
+            <p><strong>סימני אזהרה:</strong></p>
+            <p><%= threats[x].warning_signs %></p>
+
+            <p><strong>דרכי מניעה:</strong></p>
+            <p><%= threats[x].prevention %></p>
+
+            <% if (user) { %>
+
+                <a class="btn"
+                   href="/threats/edit/<%= threats[x].id %>">
+                    עריכה
+                </a>
+
+                <form method="post"
+                      action="/threats/delete/<%= threats[x].id %>"
+                      style="display:inline;">
+
+                    <button class="danger" type="submit">
+                        מחיקה
+                    </button>
+
+                </form>
+
+            <% } %>
+
+        </div>
+
+    <% } %>
+
+<% } else { %>
+
+    <p>אין איומים להצגה.</p>
+
+<% } %>
+
+<%- include('footer') %>

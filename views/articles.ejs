@@ -1,0 +1,61 @@
+<%- include('header') %>
+
+<h1>מאמרי סייבר</h1>
+
+<% if (user) { %>
+    <a class="btn" href="/articles/add">הוספת מאמר</a>
+<% } %>
+
+<% if (articles.length > 0) { %>
+
+    <% for (let x in articles) { %>
+
+        <div class="card">
+
+            <h2><%= articles[x].title %></h2>
+
+            <p><strong>קטגוריה:</strong> <%= articles[x].category %></p>
+
+            <p><strong>מחבר:</strong> <%= articles[x].author %></p>
+
+            <p><strong>תקציר:</strong> <%= articles[x].summary %></p>
+
+            <p><strong>רמת קושי:</strong> <%= articles[x].difficulty_level %></p>
+
+            <p><strong>זמן קריאה:</strong> <%= articles[x].reading_time %> דקות</p>
+
+            <p><strong>מקור:</strong> <%= articles[x].source_name %></p>
+
+            <p><strong>תוכן:</strong></p>
+
+            <p><%= articles[x].content %></p>
+
+            <% if (user) { %>
+
+                <a class="btn" href="/articles/edit/<%= articles[x].id %>">
+                    עריכה
+                </a>
+
+                <form method="post"
+                      action="/articles/delete/<%= articles[x].id %>"
+                      style="display:inline;">
+
+                    <button class="danger" type="submit">
+                        מחיקה
+                    </button>
+
+                </form>
+
+            <% } %>
+
+        </div>
+
+    <% } %>
+
+<% } else { %>
+
+    <p>אין מאמרים להצגה.</p>
+
+<% } %>
+
+<%- include('footer') %>

@@ -1,0 +1,41 @@
+<%- include('header') %>
+
+<h1><%= title %></h1>
+
+<form method="post" action="<%= action %>">
+    <label>שם האיום</label>
+    <input type="text" name="threatName" value="<%= threat ? threat.threat_name : '' %>" required>
+
+    <label>תיאור</label>
+    <textarea name="description" required><%= threat ? threat.description : '' %></textarea>
+
+    <label>רמת סיכון</label>
+    <select name="severity">
+        <option value="Low" <%= threat && threat.severity === 'Low' ? 'selected' : '' %>>נמוכה</option>
+        <option value="Medium" <%= threat && threat.severity === 'Medium' ? 'selected' : '' %>>בינונית</option>
+        <option value="High" <%= threat && threat.severity === 'High' ? 'selected' : '' %>>גבוהה</option>
+    </select>
+
+    <label>קהל יעד</label>
+    <input type="text" name="targetAudience" value="<%= threat ? threat.target_audience : '' %>" required>
+
+    <label>שיטת תקיפה</label>
+    <input type="text" name="attackMethod" value="<%= threat ? threat.attack_method : '' %>" required>
+
+    <label>סימני אזהרה</label>
+    <textarea name="warningSigns" required><%= threat ? threat.warning_signs : '' %></textarea>
+
+    <label>דרכי מניעה</label>
+    <textarea name="prevention" required><%= threat ? threat.prevention : '' %></textarea>
+
+    <label>רמת נזק</label>
+    <select name="damageLevel">
+        <option value="Low" <%= threat && threat.damage_level === 'Low' ? 'selected' : '' %>>נמוכה</option>
+        <option value="Medium" <%= threat && threat.damage_level === 'Medium' ? 'selected' : '' %>>בינונית</option>
+        <option value="High" <%= threat && threat.damage_level === 'High' ? 'selected' : '' %>>גבוהה</option>
+    </select>
+
+    <button type="submit">שמירה</button>
+</form>
+
+<%- include('footer') %>

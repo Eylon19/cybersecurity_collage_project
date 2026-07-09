@@ -1,0 +1,37 @@
+<%- include('header') %>
+
+<h1><%= title %></h1>
+
+<form method="post" action="<%= action %>">
+    <label>כותרת</label>
+    <input type="text" name="title" value="<%= article ? article.title : '' %>" required>
+
+    <label>קטגוריה</label>
+    <input type="text" name="category" value="<%= article ? article.category : '' %>" required>
+
+    <label>כותב המאמר</label>
+    <input type="text" name="author" value="<%= article ? article.author : '' %>" required>
+
+    <label>תקציר</label>
+    <input type="text" name="summary" value="<%= article ? article.summary : '' %>" required>
+
+    <label>תוכן</label>
+    <textarea name="content" required><%= article ? article.content : '' %></textarea>
+
+    <label>רמת קושי</label>
+    <select name="difficultyLevel" required>
+        <option value="Beginner" <%= article && article.difficulty_level === 'Beginner' ? 'selected' : '' %>>מתחיל</option>
+        <option value="Medium" <%= article && article.difficulty_level === 'Medium' ? 'selected' : '' %>>בינוני</option>
+        <option value="Advanced" <%= article && article.difficulty_level === 'Advanced' ? 'selected' : '' %>>מתקדם</option>
+    </select>
+
+    <label>זמן קריאה בדקות</label>
+    <input type="number" name="readingTime" value="<%= article ? article.reading_time : '' %>" required>
+
+    <label>מקור המידע</label>
+    <input type="text" name="sourceName" value="<%= article ? article.source_name : '' %>" required>
+
+    <button type="submit">שמירה</button>
+</form>
+
+<%- include('footer') %>
