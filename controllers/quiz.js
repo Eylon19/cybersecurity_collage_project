@@ -1,4 +1,5 @@
 const QuizResult = require('../models/quizResult');
+const { logError } = require('../util/logger');
 
 const CORRECT_ANSWERS = { q1: 'b', q2: 'c', q3: 'a', q4: 'b' };
 const VALID_OPTIONS = new Set(['a', 'b', 'c']);
@@ -33,7 +34,7 @@ exports.postQuiz = (req, res, next) => {
     result.save()
         .then(() => res.render('quiz', { score, error: null }))
         .catch(err => {
-            console.error('Quiz save error:', err.message);
+            logError('Quiz save error', err);
             res.render('error', { message: 'שגיאה בשמירת תוצאות המבחן' });
         });
 };

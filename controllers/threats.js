@@ -1,12 +1,13 @@
 const Threat = require('../models/threat');
 const { parseId, validateThreat, hasAffectedRows } = require('../util/validation');
 const { threatFormState } = require('../util/formState');
+const { logError } = require('../util/logger');
 
 exports.getThreats = (req, res, next) => {
     Threat.getAll()
         .then(rows => res.render('threats', { threats: rows[0] }))
         .catch(err => {
-            console.error('Get threats error:', err.message);
+            logError('Get threats error', err);
             res.render('error', { message: 'שגיאה בטעינת האיומים' });
         });
 };
@@ -45,7 +46,7 @@ exports.postAddThreat = (req, res, next) => {
     threat.save()
         .then(() => res.redirect('/threats'))
         .catch(err => {
-            console.error('Add threat error:', err.message);
+            logError('Add threat error', err);
             res.render('error', { message: 'שגיאה בהוספת האיום' });
         });
 };
@@ -69,7 +70,7 @@ exports.getEditThreat = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.error('Edit threat error:', err.message);
+            logError('Edit threat error', err);
             res.render('error', { message: 'שגיאה בטעינת האיום' });
         });
 };
@@ -108,7 +109,7 @@ exports.postEditThreat = (req, res, next) => {
             res.redirect('/threats');
         })
         .catch(err => {
-            console.error('Update threat error:', err.message);
+            logError('Update threat error', err);
             res.render('error', { message: 'שגיאה בעדכון האיום' });
         });
 };
@@ -127,7 +128,7 @@ exports.postDeleteThreat = (req, res, next) => {
             res.redirect('/threats');
         })
         .catch(err => {
-            console.error('Delete threat error:', err.message);
+            logError('Delete threat error', err);
             res.render('error', { message: 'שגיאה במחיקת האיום' });
         });
 };

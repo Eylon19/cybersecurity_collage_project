@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const QuizResult = require('../models/quizResult');
 const { validateRegistration } = require('../util/validation');
+const { logError } = require('../util/logger');
 
 function toSessionUser(user) {
     return {
@@ -41,7 +42,7 @@ exports.postRegister = (req, res, next) => {
     user.save()
         .then(() => res.redirect('/login'))
         .catch(err => {
-            console.error('Registration error:', err.message);
+            logError('Registration error', err);
             res.render('register', { error: 'לא ניתן להירשם. ייתכן ששם המשתמש כבר קיים.' });
         });
 };
@@ -63,7 +64,7 @@ exports.postLogin = (req, res, next) => {
 
             req.session.regenerate(err => {
                 if (err) {
-                    console.error('Session regenerate error:', err.message);
+                    logError('Session regenerate error', err);
                     return res.render('login', { error: 'אירעה שגיאה בהתחברות' });
                 }
                 req.session.user = toSessionUser(user);
@@ -71,7 +72,7 @@ exports.postLogin = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.error('Login error:', err.message);
+            logError('Login error', err);
             res.render('login', { error: 'אירעה שגיאה בהתחברות' });
         });
 };
@@ -82,7 +83,7 @@ exports.getProfile = (req, res, next) => {
             res.render('profile', { results: rows[0] });
         })
         .catch(err => {
-            console.error('Profile error:', err.message);
+            logError('Profile error', err);
             res.render('error', { message: 'שגיאה בטעינת הפרופיל' });
         });
 };
@@ -90,7 +91,7 @@ exports.getProfile = (req, res, next) => {
 exports.logout = (req, res, next) => {
     req.session.destroy(err => {
         if (err) {
-            console.error('Logout error:', err.message);
+            logError('Logout error', err);
             return res.render('error', { message: 'שגיאה בהתנתקות' });
         }
         res.clearCookie('connect.sid');
