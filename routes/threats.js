@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const threatsController = require('../controllers/threats');
-
-function requireLogin(req, res, next) {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
-}
+const { requireLogin } = require('../middleware/auth');
 
 router.get('/threats', threatsController.getThreats);
 router.get('/threats/add', requireLogin, threatsController.getAddThreat);

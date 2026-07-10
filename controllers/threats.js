@@ -1,64 +1,133 @@
 const Threat = require('../models/threat');
+const { parseId, validateThreat, hasAffectedRows } = require('../util/validation');
+const { threatFormState } = require('../util/formState');
 
 exports.getThreats = (req, res, next) => {
     Threat.getAll()
         .then(rows => res.render('threats', { threats: rows[0] }))
-        .catch(err => res.render('error', { message: err }));
+        .catch(err => {
+            console.error('Get threats error:', err.message);
+            res.render('error', { message: 'שגיאה בטעינת האיומים' });
+        });
 };
 
 exports.getAddThreat = (req, res, next) => {
     res.render('threat_form', {
         threat: null,
         action: '/threats/add',
-        title: 'הוספת איום'
+        title: 'הוספת איום',
+        error: null
     });
 };
 
 exports.postAddThreat = (req, res, next) => {
+    const validationErrors = validateThreat(req.body);
+    if (validationErrors.length > 0) {
+        return res.render('threat_form', {
+            threat: threatFormState(req.body),
+            action: '/threats/add',
+            title: 'הוספת איום',
+            error: validationErrors[0]
+        });
+    }
+
     const threat = new Threat(
-        req.body.threatName,
-        req.body.description,
+        req.body.threatName.trim(),
+        req.body.description.trim(),
         req.body.severity,
-        req.body.targetAudience,
-        req.body.attackMethod,
-        req.body.warningSigns,
-        req.body.prevention,
+        req.body.targetAudience.trim(),
+        req.body.attackMethod.trim(),
+        req.body.warningSigns.trim(),
+        req.body.prevention.trim(),
         req.body.damageLevel
     );
 
     threat.save()
         .then(() => res.redirect('/threats'))
-        .catch(err => res.render('error', { message: err }));
+        .catch(err => {
+            console.error('Add threat error:', err.message);
+            res.render('error', { message: 'שגיאה בהוספת האיום' });
+        });
 };
 
 exports.getEditThreat = (req, res, next) => {
-    Threat.getById(req.params.id)
-        .then(rows => res.render('threat_form', {
-            threat: rows[0][0],
-            action: '/threats/edit/' + req.params.id,
-            title: 'עריכת איום'
-        }))
-        .catch(err => res.render('error', { message: err }));
+    const id = parseId(req.params.id);
+    if (!id) {
+        return res.render('error', { message: 'מזהה איום לא תקין' });
+    }
+
+    Threat.getById(id)
+        .then(rows => {
+            if (!rows[0][0]) {
+                return res.render('error', { message: 'האיום לא נמצא' });
+            }
+            res.render('threat_form', {
+                threat: rows[0][0],
+                action: '/threats/edit/' + id,
+                title: 'עריכת איום',
+                error: null
+            });
+        })
+        .catch(err => {
+            console.error('Edit threat error:', err.message);
+            res.render('error', { message: 'שגיאה בטעינת האיום' });
+        });
 };
 
 exports.postEditThreat = (req, res, next) => {
+    const id = parseId(req.params.id);
+    if (!id) {
+        return res.render('error', { message: 'מזהה איום לא תקין' });
+    }
+
+    const validationErrors = validateThreat(req.body);
+    if (validationErrors.length > 0) {
+        return res.render('threat_form', {
+            threat: threatFormState(req.body),
+            action: '/threats/edit/' + id,
+            title: 'עריכת איום',
+            error: validationErrors[0]
+        });
+    }
+
     Threat.update(
-        req.params.id,
-        req.body.threatName,
-        req.body.description,
+        id,
+        req.body.threatName.trim(),
+        req.body.description.trim(),
         req.body.severity,
-        req.body.targetAudience,
-        req.body.attackMethod,
-        req.body.warningSigns,
-        req.body.prevention,
+        req.body.targetAudience.trim(),
+        req.body.attackMethod.trim(),
+        req.body.warningSigns.trim(),
+        req.body.prevention.trim(),
         req.body.damageLevel
     )
-        .then(() => res.redirect('/threats'))
-        .catch(err => res.render('error', { message: err }));
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'האיום לא נמצא' });
+            }
+            res.redirect('/threats');
+        })
+        .catch(err => {
+            console.error('Update threat error:', err.message);
+            res.render('error', { message: 'שגיאה בעדכון האיום' });
+        });
 };
 
 exports.postDeleteThreat = (req, res, next) => {
-    Threat.delete(req.params.id)
-        .then(() => res.redirect('/threats'))
-        .catch(err => res.render('error', { message: err }));
+    const id = parseId(req.params.id);
+    if (!id) {
+        return res.render('error', { message: 'מזהה איום לא תקין' });
+    }
+
+    Threat.delete(id)
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'האיום לא נמצא' });
+            }
+            res.redirect('/threats');
+        })
+        .catch(err => {
+            console.error('Delete threat error:', err.message);
+            res.render('error', { message: 'שגיאה במחיקת האיום' });
+        });
 };

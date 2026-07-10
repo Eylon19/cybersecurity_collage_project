@@ -1,18 +1,39 @@
 const QuizResult = require('../models/quizResult');
 
+const CORRECT_ANSWERS = { q1: 'b', q2: 'c', q3: 'a', q4: 'b' };
+const VALID_OPTIONS = new Set(['a', 'b', 'c']);
+
+function validateQuizSubmission(body) {
+    for (const question of Object.keys(CORRECT_ANSWERS)) {
+        if (!VALID_OPTIONS.has(body[question])) {
+            return 'יש לענות על כל שאלות המבחן.';
+        }
+    }
+    return null;
+}
+
 exports.getQuiz = (req, res, next) => {
-    res.render('quiz', { score: null });
+    res.render('quiz', { score: null, error: null });
 };
 
 exports.postQuiz = (req, res, next) => {
+    const validationError = validateQuizSubmission(req.body);
+    if (validationError) {
+        return res.render('quiz', { score: null, error: validationError });
+    }
+
     let score = 0;
-    if (req.body.q1 === 'b') score += 25;
-    if (req.body.q2 === 'c') score += 25;
-    if (req.body.q3 === 'a') score += 25;
-    if (req.body.q4 === 'b') score += 25;
+    for (const [question, answer] of Object.entries(CORRECT_ANSWERS)) {
+        if (req.body[question] === answer) {
+            score += 25;
+        }
+    }
 
     const result = new QuizResult(req.session.user.id, score);
     result.save()
-        .then(() => res.render('quiz', { score: score }))
-        .catch(err => res.render('error', { message: err }));
+        .then(() => res.render('quiz', { score, error: null }))
+        .catch(err => {
+            console.error('Quiz save error:', err.message);
+            res.render('error', { message: 'שגיאה בשמירת תוצאות המבחן' });
+        });
 };

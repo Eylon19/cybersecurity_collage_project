@@ -8,38 +8,38 @@
 
 <% if (tips.length > 0) { %>
 
-    <% for (let x in tips) { %>
+    <% for (let i = 0; i < tips.length; i++) { %>
 
         <div class="card">
 
-            <h2><%= tips[x].title %></h2>
+            <h2><%= tips[i].title %></h2>
 
-            <p><strong>קטגוריה:</strong> <%= tips[x].category %></p>
+            <p><strong>קטגוריה:</strong> <%= tips[i].category %></p>
 
-            <p><strong>רמת חשיבות:</strong> <%= tips[x].importance_level %></p>
+            <p><strong>רמת חשיבות:</strong> <%= tips[i].importance_level %></p>
 
-            <p><strong>קהל יעד:</strong> <%= tips[x].target_user %></p>
+            <p><strong>קהל יעד:</strong> <%= tips[i].target_user %></p>
 
             <p><strong>תיאור:</strong></p>
-            <p><%= tips[x].description %></p>
+            <p><%= tips[i].description %></p>
 
             <p><strong>פעולה מומלצת:</strong></p>
-            <p><%= tips[x].recommended_action %></p>
+            <p><%= tips[i].recommended_action %></p>
 
             <p><strong>דוגמה:</strong></p>
-            <p><%= tips[x].example %></p>
+            <p><%= tips[i].example %></p>
 
             <% if (user) { %>
 
                 <a class="btn"
-                   href="/security-tips/edit/<%= tips[x].id %>">
+                   href="/security-tips/edit/<%= tips[i].id %>">
                     עריכה
                 </a>
 
                 <form method="post"
-                      action="/security-tips/delete/<%= tips[x].id %>"
+                      action="/security-tips/delete/<%= tips[i].id %>"
                       style="display:inline;">
-
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="danger" type="submit">
                         מחיקה
                     </button>

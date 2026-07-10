@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const { csrfProtection } = require('./middleware/csrf');
 
 const app = express();
 
@@ -16,11 +19,24 @@ app.set('views', 'views');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+    console.warn('WARNING: SESSION_SECRET is not set. Using fallback — not safe for production.');
+}
+
 app.use(session({
-    secret: 'cyber-awareness-secret',
+    secret: sessionSecret || 'dev-only-fallback-secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000
+    }
 }));
+
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
     res.locals.user = req.session.user;
@@ -31,13 +47,18 @@ app.use(usersRoutes);
 app.use(articlesRoutes);
 app.use(threatsRoutes);
 app.use(quizRoutes);
-console.log('loading security tips routes');
 app.use(securityTipsRoutes);
 
 app.use((req, res, next) => {
     res.status(404).render('error', { message: 'הדף לא נמצא' });
 });
 
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err.message);
+    res.status(500).render('error', { message: 'אירעה שגיאה בלתי צפויה בשרת' });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
