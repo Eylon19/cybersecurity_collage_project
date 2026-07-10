@@ -1,5 +1,6 @@
 const Threat = require('../models/threat');
-const { parseId, validateThreat } = require('../util/validation');
+const { parseId, validateThreat, hasAffectedRows } = require('../util/validation');
+const { threatFormState } = require('../util/formState');
 
 exports.getThreats = (req, res, next) => {
     Threat.getAll()
@@ -23,16 +24,7 @@ exports.postAddThreat = (req, res, next) => {
     const validationErrors = validateThreat(req.body);
     if (validationErrors.length > 0) {
         return res.render('threat_form', {
-            threat: {
-                threat_name: req.body.threatName,
-                description: req.body.description,
-                severity: req.body.severity,
-                target_audience: req.body.targetAudience,
-                attack_method: req.body.attackMethod,
-                warning_signs: req.body.warningSigns,
-                prevention: req.body.prevention,
-                damage_level: req.body.damageLevel
-            },
+            threat: threatFormState(req.body),
             action: '/threats/add',
             title: 'הוספת איום',
             error: validationErrors[0]
@@ -91,16 +83,7 @@ exports.postEditThreat = (req, res, next) => {
     const validationErrors = validateThreat(req.body);
     if (validationErrors.length > 0) {
         return res.render('threat_form', {
-            threat: {
-                threat_name: req.body.threatName,
-                description: req.body.description,
-                severity: req.body.severity,
-                target_audience: req.body.targetAudience,
-                attack_method: req.body.attackMethod,
-                warning_signs: req.body.warningSigns,
-                prevention: req.body.prevention,
-                damage_level: req.body.damageLevel
-            },
+            threat: threatFormState(req.body),
             action: '/threats/edit/' + id,
             title: 'עריכת איום',
             error: validationErrors[0]
@@ -118,7 +101,12 @@ exports.postEditThreat = (req, res, next) => {
         req.body.prevention.trim(),
         req.body.damageLevel
     )
-        .then(() => res.redirect('/threats'))
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'האיום לא נמצא' });
+            }
+            res.redirect('/threats');
+        })
         .catch(err => {
             console.error('Update threat error:', err.message);
             res.render('error', { message: 'שגיאה בעדכון האיום' });
@@ -132,7 +120,12 @@ exports.postDeleteThreat = (req, res, next) => {
     }
 
     Threat.delete(id)
-        .then(() => res.redirect('/threats'))
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'האיום לא נמצא' });
+            }
+            res.redirect('/threats');
+        })
         .catch(err => {
             console.error('Delete threat error:', err.message);
             res.render('error', { message: 'שגיאה במחיקת האיום' });

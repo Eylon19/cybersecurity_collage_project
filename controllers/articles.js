@@ -1,5 +1,6 @@
 const Article = require('../models/article');
-const { parseId, validateArticle } = require('../util/validation');
+const { parseId, validateArticle, hasAffectedRows } = require('../util/validation');
+const { articleFormState } = require('../util/formState');
 
 exports.getArticles = (req, res, next) => {
     Article.getAll()
@@ -25,16 +26,7 @@ exports.postAddArticle = (req, res, next) => {
     const validationErrors = validateArticle(req.body);
     if (validationErrors.length > 0) {
         return res.render('article_form', {
-            article: {
-                title: req.body.title,
-                category: req.body.category,
-                author: req.body.author,
-                summary: req.body.summary,
-                content: req.body.content,
-                difficulty_level: req.body.difficultyLevel,
-                reading_time: req.body.readingTime,
-                source_name: req.body.sourceName
-            },
+            article: articleFormState(req.body),
             action: '/articles/add',
             title: 'הוספת מאמר',
             error: validationErrors[0]
@@ -93,17 +85,7 @@ exports.postEditArticle = (req, res, next) => {
     const validationErrors = validateArticle(req.body);
     if (validationErrors.length > 0) {
         return res.render('article_form', {
-            article: {
-                title: req.body.title,
-                category: req.body.category,
-                author: req.body.author,
-                summary: req.body.summary,
-                content: req.body.content,
-                difficulty_level: req.body.difficultyLevel,
-                reading_time: req.body.readingTime,
-                source_name: req.body.sourceName,
-                id
-            },
+            article: { ...articleFormState(req.body), id },
             action: '/articles/edit/' + id,
             title: 'עריכת מאמר',
             error: validationErrors[0]
@@ -121,7 +103,12 @@ exports.postEditArticle = (req, res, next) => {
         parseInt(req.body.readingTime, 10),
         req.body.sourceName.trim()
     )
-        .then(() => res.redirect('/articles'))
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'המאמר לא נמצא' });
+            }
+            res.redirect('/articles');
+        })
         .catch(err => {
             console.error('Update article error:', err.message);
             res.render('error', { message: 'שגיאה בעדכון המאמר' });
@@ -135,7 +122,12 @@ exports.postDeleteArticle = (req, res, next) => {
     }
 
     Article.delete(id)
-        .then(() => res.redirect('/articles'))
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'המאמר לא נמצא' });
+            }
+            res.redirect('/articles');
+        })
         .catch(err => {
             console.error('Delete article error:', err.message);
             res.render('error', { message: 'שגיאה במחיקת המאמר' });

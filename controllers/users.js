@@ -60,8 +60,15 @@ exports.postLogin = (req, res, next) => {
             if (!user) {
                 return res.render('login', { error: 'שם משתמש או סיסמה שגויים' });
             }
-            req.session.user = toSessionUser(user);
-            res.redirect('/profile');
+
+            req.session.regenerate(err => {
+                if (err) {
+                    console.error('Session regenerate error:', err.message);
+                    return res.render('login', { error: 'אירעה שגיאה בהתחברות' });
+                }
+                req.session.user = toSessionUser(user);
+                res.redirect('/profile');
+            });
         })
         .catch(err => {
             console.error('Login error:', err.message);
@@ -81,7 +88,12 @@ exports.getProfile = (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-    req.session.destroy(() => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Logout error:', err.message);
+            return res.render('error', { message: 'שגיאה בהתנתקות' });
+        }
+        res.clearCookie('connect.sid');
         res.redirect('/');
     });
 };

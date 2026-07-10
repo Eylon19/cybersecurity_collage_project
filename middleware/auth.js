@@ -5,4 +5,11 @@ function requireLogin(req, res, next) {
     next();
 }
 
-module.exports = { requireLogin };
+function redirectIfAuthenticated(req, res, next) {
+    if (req.session.user) {
+        return res.redirect('/profile');
+    }
+    next();
+}
+
+module.exports = { requireLogin, redirectIfAuthenticated };

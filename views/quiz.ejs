@@ -2,6 +2,8 @@
 
 <h1>מבחן מודעות לסייבר</h1>
 
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+
 <% if (score !== null) { %>
     <div class="card score-card">
         <h2>הציון שלך: <%= score %></h2>

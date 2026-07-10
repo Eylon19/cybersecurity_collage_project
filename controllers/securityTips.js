@@ -1,5 +1,6 @@
 const SecurityTip = require('../models/securityTip');
-const { parseId, validateSecurityTip } = require('../util/validation');
+const { parseId, validateSecurityTip, hasAffectedRows } = require('../util/validation');
+const { securityTipFormState } = require('../util/formState');
 
 exports.getSecurityTips = (req, res, next) => {
     SecurityTip.getAll()
@@ -23,15 +24,7 @@ exports.postAddSecurityTip = (req, res, next) => {
     const validationErrors = validateSecurityTip(req.body);
     if (validationErrors.length > 0) {
         return res.render('security_tip_form', {
-            tip: {
-                title: req.body.title,
-                category: req.body.category,
-                description: req.body.description,
-                importance_level: req.body.importanceLevel,
-                recommended_action: req.body.recommendedAction,
-                target_user: req.body.targetUser,
-                example: req.body.example
-            },
+            tip: securityTipFormState(req.body),
             action: '/security-tips/add',
             title: 'הוספת טיפ אבטחה',
             error: validationErrors[0]
@@ -89,15 +82,7 @@ exports.postEditSecurityTip = (req, res, next) => {
     const validationErrors = validateSecurityTip(req.body);
     if (validationErrors.length > 0) {
         return res.render('security_tip_form', {
-            tip: {
-                title: req.body.title,
-                category: req.body.category,
-                description: req.body.description,
-                importance_level: req.body.importanceLevel,
-                recommended_action: req.body.recommendedAction,
-                target_user: req.body.targetUser,
-                example: req.body.example
-            },
+            tip: securityTipFormState(req.body),
             action: '/security-tips/edit/' + id,
             title: 'עריכת טיפ אבטחה',
             error: validationErrors[0]
@@ -114,7 +99,12 @@ exports.postEditSecurityTip = (req, res, next) => {
         req.body.targetUser.trim(),
         req.body.example.trim()
     )
-        .then(() => res.redirect('/security-tips'))
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'הטיפ לא נמצא' });
+            }
+            res.redirect('/security-tips');
+        })
         .catch(err => {
             console.error('Update security tip error:', err.message);
             res.render('error', { message: 'שגיאה בעדכון הטיפ' });
@@ -128,7 +118,12 @@ exports.postDeleteSecurityTip = (req, res, next) => {
     }
 
     SecurityTip.delete(id)
-        .then(() => res.redirect('/security-tips'))
+        .then(result => {
+            if (!hasAffectedRows(result)) {
+                return res.render('error', { message: 'הטיפ לא נמצא' });
+            }
+            res.redirect('/security-tips');
+        })
         .catch(err => {
             console.error('Delete security tip error:', err.message);
             res.render('error', { message: 'שגיאה במחיקת הטיפ' });
