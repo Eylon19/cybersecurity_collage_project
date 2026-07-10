@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err.message);
+    logError('Unhandled error', err);
     res.status(500).render('error', { message: 'אירעה שגיאה בלתי צפויה בשרת' });
 });
 

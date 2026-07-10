@@ -1,6 +1,7 @@
 const Article = require('../models/article');
 const { parseId, validateArticle, hasAffectedRows } = require('../util/validation');
 const { articleFormState } = require('../util/formState');
+const { logError } = require('../util/logger');
 
 exports.getArticles = (req, res, next) => {
     Article.getAll()
@@ -8,7 +9,7 @@ exports.getArticles = (req, res, next) => {
             res.render('articles', { articles: rows[0] });
         })
         .catch(err => {
-            console.error('Get articles error:', err.message);
+            logError('Get articles error', err);
             res.render('error', { message: 'שגיאה בטעינת המאמרים' });
         });
 };
@@ -47,7 +48,7 @@ exports.postAddArticle = (req, res, next) => {
     article.save()
         .then(() => res.redirect('/articles'))
         .catch(err => {
-            console.error('Add article error:', err.message);
+            logError('Add article error', err);
             res.render('error', { message: 'שגיאה בהוספת המאמר' });
         });
 };
@@ -71,7 +72,7 @@ exports.getEditArticle = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.error('Edit article error:', err.message);
+            logError('Edit article error', err);
             res.render('error', { message: 'שגיאה בטעינת המאמר' });
         });
 };
@@ -110,7 +111,7 @@ exports.postEditArticle = (req, res, next) => {
             res.redirect('/articles');
         })
         .catch(err => {
-            console.error('Update article error:', err.message);
+            logError('Update article error', err);
             res.render('error', { message: 'שגיאה בעדכון המאמר' });
         });
 };
@@ -129,7 +130,7 @@ exports.postDeleteArticle = (req, res, next) => {
             res.redirect('/articles');
         })
         .catch(err => {
-            console.error('Delete article error:', err.message);
+            logError('Delete article error', err);
             res.render('error', { message: 'שגיאה במחיקת המאמר' });
         });
 };

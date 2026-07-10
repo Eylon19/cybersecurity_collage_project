@@ -1,12 +1,13 @@
 const SecurityTip = require('../models/securityTip');
 const { parseId, validateSecurityTip, hasAffectedRows } = require('../util/validation');
 const { securityTipFormState } = require('../util/formState');
+const { logError } = require('../util/logger');
 
 exports.getSecurityTips = (req, res, next) => {
     SecurityTip.getAll()
         .then(rows => res.render('security_tips', { tips: rows[0] }))
         .catch(err => {
-            console.error('Get security tips error:', err.message);
+            logError('Get security tips error', err);
             res.render('error', { message: 'שגיאה בטעינת הטיפים' });
         });
 };
@@ -44,7 +45,7 @@ exports.postAddSecurityTip = (req, res, next) => {
     tip.save()
         .then(() => res.redirect('/security-tips'))
         .catch(err => {
-            console.error('Add security tip error:', err.message);
+            logError('Add security tip error', err);
             res.render('error', { message: 'שגיאה בהוספת הטיפ' });
         });
 };
@@ -68,7 +69,7 @@ exports.getEditSecurityTip = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.error('Edit security tip error:', err.message);
+            logError('Edit security tip error', err);
             res.render('error', { message: 'שגיאה בטעינת הטיפ' });
         });
 };
@@ -106,7 +107,7 @@ exports.postEditSecurityTip = (req, res, next) => {
             res.redirect('/security-tips');
         })
         .catch(err => {
-            console.error('Update security tip error:', err.message);
+            logError('Update security tip error', err);
             res.render('error', { message: 'שגיאה בעדכון הטיפ' });
         });
 };
@@ -125,7 +126,7 @@ exports.postDeleteSecurityTip = (req, res, next) => {
             res.redirect('/security-tips');
         })
         .catch(err => {
-            console.error('Delete security tip error:', err.message);
+            logError('Delete security tip error', err);
             res.render('error', { message: 'שגיאה במחיקת הטיפ' });
         });
 };
