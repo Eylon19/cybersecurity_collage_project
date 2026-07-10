@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/users');
-
-function requireLogin(req, res, next) {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
-}
+const { requireLogin } = require('../middleware/auth');
 
 router.get('/', usersController.getHome);
 router.get('/register', usersController.getRegister);

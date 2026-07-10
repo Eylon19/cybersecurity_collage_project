@@ -9,6 +9,7 @@
 <% } %>
 
 <form class="quiz-form" method="post" action="/quiz">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="question-card">
         <h3>1. מהי מתקפת Phishing?</h3>

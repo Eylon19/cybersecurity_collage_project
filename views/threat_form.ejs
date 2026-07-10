@@ -1,8 +1,10 @@
 <%- include('header') %>
 
 <h1><%= title %></h1>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
 
 <form method="post" action="<%= action %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label>שם האיום</label>
     <input type="text" name="threatName" value="<%= threat ? threat.threat_name : '' %>" required>
 

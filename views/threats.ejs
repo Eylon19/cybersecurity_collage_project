@@ -8,40 +8,40 @@
 
 <% if (threats.length > 0) { %>
 
-    <% for (let x in threats) { %>
+    <% for (let i = 0; i < threats.length; i++) { %>
 
         <div class="card">
 
-            <h2><%= threats[x].threat_name %></h2>
+            <h2><%= threats[i].threat_name %></h2>
 
-            <p><strong>רמת סיכון:</strong> <%= threats[x].severity %></p>
+            <p><strong>רמת סיכון:</strong> <%= threats[i].severity %></p>
 
-            <p><strong>קהל יעד:</strong> <%= threats[x].target_audience %></p>
+            <p><strong>קהל יעד:</strong> <%= threats[i].target_audience %></p>
 
-            <p><strong>שיטת תקיפה:</strong> <%= threats[x].attack_method %></p>
+            <p><strong>שיטת תקיפה:</strong> <%= threats[i].attack_method %></p>
 
-            <p><strong>רמת נזק:</strong> <%= threats[x].damage_level %></p>
+            <p><strong>רמת נזק:</strong> <%= threats[i].damage_level %></p>
 
             <p><strong>תיאור:</strong></p>
-            <p><%= threats[x].description %></p>
+            <p><%= threats[i].description %></p>
 
             <p><strong>סימני אזהרה:</strong></p>
-            <p><%= threats[x].warning_signs %></p>
+            <p><%= threats[i].warning_signs %></p>
 
             <p><strong>דרכי מניעה:</strong></p>
-            <p><%= threats[x].prevention %></p>
+            <p><%= threats[i].prevention %></p>
 
             <% if (user) { %>
 
                 <a class="btn"
-                   href="/threats/edit/<%= threats[x].id %>">
+                   href="/threats/edit/<%= threats[i].id %>">
                     עריכה
                 </a>
 
                 <form method="post"
-                      action="/threats/delete/<%= threats[x].id %>"
+                      action="/threats/delete/<%= threats[i].id %>"
                       style="display:inline;">
-
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="danger" type="submit">
                         מחיקה
                     </button>

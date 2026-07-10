@@ -8,38 +8,38 @@
 
 <% if (articles.length > 0) { %>
 
-    <% for (let x in articles) { %>
+    <% for (let i = 0; i < articles.length; i++) { %>
 
         <div class="card">
 
-            <h2><%= articles[x].title %></h2>
+            <h2><%= articles[i].title %></h2>
 
-            <p><strong>קטגוריה:</strong> <%= articles[x].category %></p>
+            <p><strong>קטגוריה:</strong> <%= articles[i].category %></p>
 
-            <p><strong>מחבר:</strong> <%= articles[x].author %></p>
+            <p><strong>מחבר:</strong> <%= articles[i].author %></p>
 
-            <p><strong>תקציר:</strong> <%= articles[x].summary %></p>
+            <p><strong>תקציר:</strong> <%= articles[i].summary %></p>
 
-            <p><strong>רמת קושי:</strong> <%= articles[x].difficulty_level %></p>
+            <p><strong>רמת קושי:</strong> <%= articles[i].difficulty_level %></p>
 
-            <p><strong>זמן קריאה:</strong> <%= articles[x].reading_time %> דקות</p>
+            <p><strong>זמן קריאה:</strong> <%= articles[i].reading_time %> דקות</p>
 
-            <p><strong>מקור:</strong> <%= articles[x].source_name %></p>
+            <p><strong>מקור:</strong> <%= articles[i].source_name %></p>
 
             <p><strong>תוכן:</strong></p>
 
-            <p><%= articles[x].content %></p>
+            <p><%= articles[i].content %></p>
 
             <% if (user) { %>
 
-                <a class="btn" href="/articles/edit/<%= articles[x].id %>">
+                <a class="btn" href="/articles/edit/<%= articles[i].id %>">
                     עריכה
                 </a>
 
                 <form method="post"
-                      action="/articles/delete/<%= articles[x].id %>"
+                      action="/articles/delete/<%= articles[i].id %>"
                       style="display:inline;">
-
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="danger" type="submit">
                         מחיקה
                     </button>

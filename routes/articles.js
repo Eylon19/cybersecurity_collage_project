@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const articlesController = require('../controllers/articles');
-
-function requireLogin(req, res, next) {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
-}
+const { requireLogin } = require('../middleware/auth');
 
 router.get('/articles', articlesController.getArticles);
 router.get('/articles/add', requireLogin, articlesController.getAddArticle);

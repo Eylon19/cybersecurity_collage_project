@@ -2,6 +2,7 @@
 <h1>הרשמה</h1>
 <% if (error) { %><p class="error"><%= error %></p><% } %>
 <form method="post" action="/register">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label>שם משתמש</label>
     <input type="text" name="username" required>
     <label>סיסמה</label>

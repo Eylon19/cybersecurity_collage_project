@@ -1,14 +1,14 @@
 const Article = require('../models/article');
+const { parseId, validateArticle } = require('../util/validation');
 
 exports.getArticles = (req, res, next) => {
     Article.getAll()
         .then(rows => {
-            res.render('articles', {
-                articles: rows[0]
-            });
+            res.render('articles', { articles: rows[0] });
         })
         .catch(err => {
-            res.render('error', { message: err });
+            console.error('Get articles error:', err.message);
+            res.render('error', { message: 'שגיאה בטעינת המאמרים' });
         });
 };
 
@@ -16,71 +16,128 @@ exports.getAddArticle = (req, res, next) => {
     res.render('article_form', {
         article: null,
         action: '/articles/add',
-        title: 'הוספת מאמר'
+        title: 'הוספת מאמר',
+        error: null
     });
 };
 
 exports.postAddArticle = (req, res, next) => {
+    const validationErrors = validateArticle(req.body);
+    if (validationErrors.length > 0) {
+        return res.render('article_form', {
+            article: {
+                title: req.body.title,
+                category: req.body.category,
+                author: req.body.author,
+                summary: req.body.summary,
+                content: req.body.content,
+                difficulty_level: req.body.difficultyLevel,
+                reading_time: req.body.readingTime,
+                source_name: req.body.sourceName
+            },
+            action: '/articles/add',
+            title: 'הוספת מאמר',
+            error: validationErrors[0]
+        });
+    }
+
     const article = new Article(
-        req.body.title,
-        req.body.category,
-        req.body.author,
-        req.body.summary,
-        req.body.content,
+        req.body.title.trim(),
+        req.body.category.trim(),
+        req.body.author.trim(),
+        req.body.summary.trim(),
+        req.body.content.trim(),
         req.body.difficultyLevel,
-        req.body.readingTime,
-        req.body.sourceName
+        parseInt(req.body.readingTime, 10),
+        req.body.sourceName.trim()
     );
 
     article.save()
-        .then(() => {
-            res.redirect('/articles');
-        })
+        .then(() => res.redirect('/articles'))
         .catch(err => {
-            res.render('error', { message: err });
+            console.error('Add article error:', err.message);
+            res.render('error', { message: 'שגיאה בהוספת המאמר' });
         });
 };
 
 exports.getEditArticle = (req, res, next) => {
-    Article.getById(req.params.id)
+    const id = parseId(req.params.id);
+    if (!id) {
+        return res.render('error', { message: 'מזהה מאמר לא תקין' });
+    }
+
+    Article.getById(id)
         .then(rows => {
+            if (!rows[0][0]) {
+                return res.render('error', { message: 'המאמר לא נמצא' });
+            }
             res.render('article_form', {
                 article: rows[0][0],
-                action: '/articles/edit/' + req.params.id,
-                title: 'עריכת מאמר'
+                action: '/articles/edit/' + id,
+                title: 'עריכת מאמר',
+                error: null
             });
         })
         .catch(err => {
-            res.render('error', { message: err });
+            console.error('Edit article error:', err.message);
+            res.render('error', { message: 'שגיאה בטעינת המאמר' });
         });
 };
 
 exports.postEditArticle = (req, res, next) => {
+    const id = parseId(req.params.id);
+    if (!id) {
+        return res.render('error', { message: 'מזהה מאמר לא תקין' });
+    }
+
+    const validationErrors = validateArticle(req.body);
+    if (validationErrors.length > 0) {
+        return res.render('article_form', {
+            article: {
+                title: req.body.title,
+                category: req.body.category,
+                author: req.body.author,
+                summary: req.body.summary,
+                content: req.body.content,
+                difficulty_level: req.body.difficultyLevel,
+                reading_time: req.body.readingTime,
+                source_name: req.body.sourceName,
+                id
+            },
+            action: '/articles/edit/' + id,
+            title: 'עריכת מאמר',
+            error: validationErrors[0]
+        });
+    }
+
     Article.update(
-        req.params.id,
-        req.body.title,
-        req.body.category,
-        req.body.author,
-        req.body.summary,
-        req.body.content,
+        id,
+        req.body.title.trim(),
+        req.body.category.trim(),
+        req.body.author.trim(),
+        req.body.summary.trim(),
+        req.body.content.trim(),
         req.body.difficultyLevel,
-        req.body.readingTime,
-        req.body.sourceName
+        parseInt(req.body.readingTime, 10),
+        req.body.sourceName.trim()
     )
-        .then(() => {
-            res.redirect('/articles');
-        })
+        .then(() => res.redirect('/articles'))
         .catch(err => {
-            res.render('error', { message: err });
+            console.error('Update article error:', err.message);
+            res.render('error', { message: 'שגיאה בעדכון המאמר' });
         });
 };
 
 exports.postDeleteArticle = (req, res, next) => {
-    Article.delete(req.params.id)
-        .then(() => {
-            res.redirect('/articles');
-        })
+    const id = parseId(req.params.id);
+    if (!id) {
+        return res.render('error', { message: 'מזהה מאמר לא תקין' });
+    }
+
+    Article.delete(id)
+        .then(() => res.redirect('/articles'))
         .catch(err => {
-            res.render('error', { message: err });
+            console.error('Delete article error:', err.message);
+            res.render('error', { message: 'שגיאה במחיקת המאמר' });
         });
 };
