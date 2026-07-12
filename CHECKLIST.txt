@@ -1,0 +1,25 @@
+רשימת העתקה לשרת Windows
+==========================
+
+לפני ההעתקה (Mac):
+  [ ] וודא שקיים קובץ .env בתיקייה
+  [ ] הצג קבצים נסתרים: Cmd+Shift+.
+
+מה להעתיק:
+  [x] app.js, package.json, package-lock.json
+  [x] db.sql, README.txt, setup-windows.bat
+  [x] .env.example
+  [x] .env  ← חובה! (קובץ נסתר)
+  [x] controllers/, models/, routes/, views/
+  [x] middleware/, util/, public/
+  [ ] node_modules  ← אל תעתיק! הרץ npm install בשרת
+
+אחרי ההעתקה (Windows):
+  [ ] וודא ש-.env קיים (לא .env.txt)
+  [ ] npm install
+  [ ] ייבא db.sql (ראה README.txt)
+  [ ] npm start
+  [ ] בדוק: http://localhost:3000/articles
+
+או הרץ ב-CMD:
+  setup-windows.bat
